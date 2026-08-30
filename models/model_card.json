@@ -1,0 +1,580 @@
+{
+  "model_version": "rf-1.0.0+if-1.0.0",
+  "trained_at": "2026-08-22T17:23:41.089013+00:00",
+  "random_seed": 42,
+  "dataset": {
+    "name": "CSE-CIC-IDS2018",
+    "files_used": [
+      "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+      "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+      "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+      "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv",
+      "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv",
+      "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv",
+      "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+    ],
+    "per_file_reports": {
+      "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 1048575,
+        "rows_out": 787048,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 4050,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 257477,
+        "header_rows_removed": 0,
+        "invalid_duration_rows": 0,
+        "labels_excluded": {},
+        "class_distribution": {
+          "BENIGN": 642513,
+          "BOTNET": 144535
+        }
+      },
+      "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 1048575,
+        "rows_out": 629932,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 0,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 418642,
+        "header_rows_removed": 1,
+        "invalid_duration_rows": 0,
+        "labels_excluded": {},
+        "class_distribution": {
+          "BENIGN": 446753,
+          "DOS": 183179
+        }
+      },
+      "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 1048575,
+        "rows_out": 857819,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 5708,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 185048,
+        "header_rows_removed": 0,
+        "invalid_duration_rows": 0,
+        "labels_excluded": {},
+        "class_distribution": {
+          "BENIGN": 857278,
+          "WEB_ATTACK": 541
+        }
+      },
+      "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 331125,
+        "rows_out": 185297,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 2259,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 50481,
+        "header_rows_removed": 25,
+        "invalid_duration_rows": 0,
+        "labels_excluded": {
+          "Infilteration": 93063
+        },
+        "class_distribution": {
+          "BENIGN": 185297
+        }
+      },
+      "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 1048575,
+        "rows_out": 828762,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 8027,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 211786,
+        "header_rows_removed": 0,
+        "invalid_duration_rows": 0,
+        "labels_excluded": {},
+        "class_distribution": {
+          "BENIGN": 777448,
+          "DOS": 51314
+        }
+      },
+      "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 1048575,
+        "rows_out": 860223,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 5610,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 182733,
+        "header_rows_removed": 0,
+        "invalid_duration_rows": 9,
+        "labels_excluded": {},
+        "class_distribution": {
+          "BENIGN": 859885,
+          "WEB_ATTACK": 338
+        }
+      },
+      "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 1048575,
+        "rows_out": 635205,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 3824,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 409541,
+        "header_rows_removed": 0,
+        "invalid_duration_rows": 5,
+        "labels_excluded": {},
+        "class_distribution": {
+          "BENIGN": 541114,
+          "BRUTE_FORCE": 94091
+        }
+      },
+      "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 1048575,
+        "rows_out": 588618,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 0,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 459957,
+        "header_rows_removed": 0,
+        "invalid_duration_rows": 0,
+        "labels_excluded": {},
+        "class_distribution": {
+          "DDOS": 227867,
+          "BENIGN": 360751
+        }
+      },
+      "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "rows_in": 613104,
+        "rows_out": 404975,
+        "leakage_columns_dropped": [
+          "Dst Port",
+          "Timestamp"
+        ],
+        "inf_rows_dropped": 5534,
+        "nan_rows_dropped": 0,
+        "duplicates_removed": 133691,
+        "header_rows_removed": 33,
+        "invalid_duration_rows": 0,
+        "labels_excluded": {
+          "Infilteration": 68871
+        },
+        "class_distribution": {
+          "BENIGN": 404975
+        }
+      }
+    },
+    "combined": {
+      "rows_in": 8284254,
+      "rows_out": 5248179,
+      "leakage_columns_dropped": [],
+      "inf_rows_dropped": 35012,
+      "nan_rows_dropped": 0,
+      "duplicates_removed": 2839056,
+      "header_rows_removed": 59,
+      "invalid_duration_rows": 14,
+      "labels_excluded": {
+        "Infilteration": 161934
+      },
+      "class_distribution": {
+        "BENIGN": 4611533,
+        "DDOS": 200591,
+        "DOS": 196568,
+        "BOTNET": 144535,
+        "BRUTE_FORCE": 94091,
+        "WEB_ATTACK": 861
+      }
+    }
+  },
+  "features": {
+    "count": 22,
+    "order": [
+      "flow_duration",
+      "fwd_packets",
+      "bwd_packets",
+      "fwd_bytes",
+      "bwd_bytes",
+      "flow_bytes_per_s",
+      "flow_packets_per_s",
+      "flow_iat_mean",
+      "flow_iat_std",
+      "fwd_iat_mean",
+      "syn_flag_count",
+      "ack_flag_count",
+      "rst_flag_count",
+      "psh_flag_count",
+      "pkt_len_mean",
+      "pkt_len_std",
+      "down_up_ratio",
+      "init_win_fwd",
+      "syn_to_ack_ratio",
+      "bytes_per_packet_fwd",
+      "pkt_rate_asymmetry",
+      "is_short_flow"
+    ],
+    "raw": [
+      "flow_duration",
+      "fwd_packets",
+      "bwd_packets",
+      "fwd_bytes",
+      "bwd_bytes",
+      "flow_bytes_per_s",
+      "flow_packets_per_s",
+      "flow_iat_mean",
+      "flow_iat_std",
+      "fwd_iat_mean",
+      "syn_flag_count",
+      "ack_flag_count",
+      "rst_flag_count",
+      "psh_flag_count",
+      "pkt_len_mean",
+      "pkt_len_std",
+      "down_up_ratio",
+      "init_win_fwd"
+    ],
+    "engineered": [
+      "syn_to_ack_ratio",
+      "bytes_per_packet_fwd",
+      "pkt_rate_asymmetry",
+      "is_short_flow"
+    ],
+    "schema_version": "13b-cse-cic-ids2018-1.0.0"
+  },
+  "classes": [
+    "BENIGN",
+    "BOTNET",
+    "BRUTE_FORCE",
+    "DDOS",
+    "DOS",
+    "WEB_ATTACK"
+  ],
+  "classes_not_trainable": [
+    "PORT_SCAN"
+  ],
+  "split": {
+    "strategy": "stratified 70/15/15",
+    "temporal_holdout": false,
+    "why_not_temporal": "BOTNET, DDOS and BRUTE_FORCE each occur in a single capture day; a day-based holdout would remove those classes from training.",
+    "deduplicated_before_split": true
+  },
+  "random_forest": {
+    "params": {
+      "bootstrap": true,
+      "ccp_alpha": 0.0,
+      "class_weight": "balanced_subsample",
+      "criterion": "gini",
+      "max_depth": null,
+      "max_features": "sqrt",
+      "max_leaf_nodes": null,
+      "max_samples": null,
+      "min_impurity_decrease": 0.0,
+      "min_samples_leaf": 2,
+      "min_samples_split": 2,
+      "min_weight_fraction_leaf": 0.0,
+      "monotonic_cst": null,
+      "n_estimators": 150,
+      "n_jobs": -1,
+      "oob_score": false,
+      "random_state": 42,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "validation": {
+      "accuracy": 0.9996659159302209,
+      "macro_precision": 0.9648137373985536,
+      "macro_recall": 0.9578676754282439,
+      "macro_f1": 0.9612403217983032,
+      "weighted_f1": 0.9996649911178401,
+      "per_class": {
+        "BENIGN": {
+          "precision": 0.9998467548163804,
+          "recall": 0.9998062827982016,
+          "f1-score": 0.999826518397724,
+          "support": 691730.0
+        },
+        "BOTNET": {
+          "precision": 0.9953030023945478,
+          "recall": 0.9969557195571955,
+          "f1-score": 0.9961286754539589,
+          "support": 21680.0
+        },
+        "BRUTE_FORCE": {
+          "precision": 0.9993621997023598,
+          "recall": 0.9991497803599263,
+          "f1-score": 0.9992559787422498,
+          "support": 14114.0
+        },
+        "DDOS": {
+          "precision": 0.999966765263053,
+          "recall": 0.999966765263053,
+          "f1-score": 0.999966765263053,
+          "support": 30089.0
+        },
+        "DOS": {
+          "precision": 0.9993217350018653,
+          "recall": 0.9993895200949635,
+          "f1-score": 0.999355626398969,
+          "support": 29485.0
+        },
+        "WEB_ATTACK": {
+          "precision": 0.7950819672131147,
+          "recall": 0.751937984496124,
+          "f1-score": 0.7729083665338645,
+          "support": 129.0
+        },
+        "accuracy": 0.9996659159302209,
+        "macro avg": {
+          "precision": 0.9648137373985536,
+          "recall": 0.9578676754282439,
+          "f1-score": 0.9612403217983032,
+          "support": 787227.0
+        },
+        "weighted avg": {
+          "precision": 0.9996643024412885,
+          "recall": 0.9996659159302209,
+          "f1-score": 0.9996649911178401,
+          "support": 787227.0
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "BENIGN",
+          "BOTNET",
+          "BRUTE_FORCE",
+          "DDOS",
+          "DOS",
+          "WEB_ATTACK"
+        ],
+        "matrix": [
+          [
+            691596,
+            94,
+            0,
+            1,
+            17,
+            22
+          ],
+          [
+            63,
+            21614,
+            0,
+            0,
+            0,
+            3
+          ],
+          [
+            9,
+            0,
+            14102,
+            0,
+            3,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            30088,
+            0,
+            0
+          ],
+          [
+            9,
+            0,
+            9,
+            0,
+            29467,
+            0
+          ],
+          [
+            24,
+            8,
+            0,
+            0,
+            0,
+            97
+          ]
+        ]
+      }
+    },
+    "test": {
+      "accuracy": 0.9996557536771478,
+      "macro_precision": 0.9728150686473462,
+      "macro_recall": 0.9514970087680585,
+      "macro_f1": 0.9612393411417055,
+      "weighted_f1": 0.9996530185377445,
+      "per_class": {
+        "BENIGN": {
+          "precision": 0.999856870435938,
+          "recall": 0.999786043687566,
+          "f1-score": 0.9998214558074209,
+          "support": 691730.0
+        },
+        "BOTNET": {
+          "precision": 0.9947564509452187,
+          "recall": 0.9975093399750934,
+          "f1-score": 0.9961309935055962,
+          "support": 21681.0
+        },
+        "BRUTE_FORCE": {
+          "precision": 0.9992913832199547,
+          "recall": 0.9992205767731879,
+          "f1-score": 0.9992559787422498,
+          "support": 14113.0
+        },
+        "DDOS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 30088.0
+        },
+        "DOS": {
+          "precision": 0.998949010035259,
+          "recall": 0.9992877975988604,
+          "f1-score": 0.9991183750974874,
+          "support": 29486.0
+        },
+        "WEB_ATTACK": {
+          "precision": 0.8440366972477065,
+          "recall": 0.7131782945736435,
+          "f1-score": 0.773109243697479,
+          "support": 129.0
+        },
+        "accuracy": 0.9996557536771478,
+        "macro avg": {
+          "precision": 0.9728150686473462,
+          "recall": 0.9514970087680585,
+          "f1-score": 0.9612393411417055,
+          "support": 787227.0
+        },
+        "weighted avg": {
+          "precision": 0.9996521945192715,
+          "recall": 0.9996557536771478,
+          "f1-score": 0.9996530185377445,
+          "support": 787227.0
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "BENIGN",
+          "BOTNET",
+          "BRUTE_FORCE",
+          "DDOS",
+          "DOS",
+          "WEB_ATTACK"
+        ],
+        "matrix": [
+          [
+            691582,
+            105,
+            1,
+            0,
+            25,
+            17
+          ],
+          [
+            54,
+            21627,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            0,
+            14102,
+            0,
+            6,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            30088,
+            0,
+            0
+          ],
+          [
+            12,
+            0,
+            9,
+            0,
+            29465,
+            0
+          ],
+          [
+            28,
+            9,
+            0,
+            0,
+            0,
+            92
+          ]
+        ]
+      }
+    }
+  },
+  "isolation_forest": {
+    "params": {
+      "bootstrap": false,
+      "contamination": "auto",
+      "max_features": 1.0,
+      "max_samples": "auto",
+      "n_estimators": 200,
+      "n_jobs": -1,
+      "random_state": 42,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "metrics": {
+      "trained_on_benign_rows": 3689226,
+      "holdout_benign_rows": 922307,
+      "threshold_percentile": 5,
+      "threshold_score": -0.5323214023800514,
+      "normalisation": {
+        "p01": -0.6346611027006335,
+        "p50": -0.41898590877336456
+      },
+      "false_positive_rate_holdout": 0.05012213937441654,
+      "false_positives": 46228,
+      "attack_detection_rate": 0.020579725624601426,
+      "attack_rows_scored": 636646
+    }
+  },
+  "majority_baseline": {
+    "majority_class": "BENIGN",
+    "accuracy": 0.8786920186982952,
+    "macro_f1": 0.15590492568816075,
+    "weighted_f1": 0.8219544832676259
+  },
+  "checksums": {
+    "random_forest/rf.joblib": "23b41a479f965152fcf6a5ddf8a256dd63de5d6128c7e6260345ec40eda532ac",
+    "isolation_forest/isolation_forest.joblib": "f25c528290b34ba85d01c829376aa62b192d653503edd72eaa451b654fab0c90"
+  },
+  "limitations": [
+    "Network-flow detections only. Cannot score R-001 to R-004 (host telemetry absent from CSE-CIC-IDS2018).",
+    "PORT_SCAN has no training data in this dataset and is not ML-supported.",
+    "Infilteration rows excluded: not in SECURITY_CLASSES.",
+    "Stratified split, not temporal. See split.why_not_temporal.",
+    "2018 laboratory capture; not representative of current production traffic."
+  ]
+}

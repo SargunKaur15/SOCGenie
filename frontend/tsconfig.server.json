@@ -1,0 +1,25 @@
+{
+  // CommonJS deliberately: the shared Phase 8 RAG modules use extensionless
+  // relative imports (correct for a bundler). NodeNext would demand ".js"
+  // suffixes, which would mean editing working Phase 8 files purely to suit
+  // the server. CJS output resolves them as-is and Node runs it directly.
+  //
+  // `moduleResolution` is intentionally omitted: with `module: CommonJS` it
+  // defaults to Node resolution, which is what the server needs. Naming it
+  // explicitly would require an `ignoreDeprecations` flag on TypeScript 6+,
+  // and that flag's accepted value differs per major version — a portability
+  // trap. Relying on the default works on both 5.x and 6.x.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "rootDir": "..",
+    "outDir": "../server/dist",
+    "declaration": false
+  },
+  "include": ["../server/src/**/*.ts", "src/lib/rag/**/*.ts"]
+}
