@@ -1,0 +1,80 @@
+/* ---------------------------------------------------------------------------
+   SOCGenie design tokens — PRD v2.0 §24
+   Values are space-separated RGB channels so Tailwind opacity modifiers
+   (e.g. bg-status-critical/10) work against CSS variables.
+   Dark is the default operational theme; .light is the alternate.
+
+   AMENDMENT to PRD v2.0 §24 (which specified no purple/violet):
+   --accent-secondary is a low-chroma indigo used ONLY for ambient depth —
+   backdrop gradients, a ~12% minority of network nodes, the outer core ring
+   and the light-mode card ring. It is never applied to text, buttons,
+   borders, status indicators, or the DETECT/ANALYZE/RESPOND channels.
+   Removing this one token reverts the palette to the original spec.
+
+   SECOND AMENDMENT: --accent-warm is a controlled gold/amber brand accent,
+   distinct from --status-medium/--status-high. Used ONLY for the Login
+   page's primary CTA gradient and the 3D SecurityCore's glow when it is
+   genuinely reflecting a real critical-alert count ("elevated" state) —
+   never as a general-purpose UI color, never to represent severity itself
+   (severity keeps its own existing --status-* tokens unchanged).
+--------------------------------------------------------------------------- */
+
+:root,
+.dark {
+  color-scheme: dark;
+
+  --bg-primary:     11 15 20;      /* #0B0F14 */
+  --bg-secondary:   17 22 29;      /* #11161D */
+  --bg-surface:     22 28 36;      /* #161C24 */
+  --bg-elevated:    27 34 44;      /* #1B222C */
+  --border-default: 37 45 56;      /* #252D38 */
+
+  --text-primary:   241 245 249;   /* #F1F5F9 */
+  --text-secondary: 148 163 184;   /* #94A3B8 */
+  --text-muted:     100 116 139;   /* #64748B */
+
+  --accent:         56 189 248;    /* #38BDF8 */
+  /* Secondary ambient accent. AMBIENT DEPTH ONLY — backdrop gradients, a
+     minority of network nodes, the outer core ring. Never used for text,
+     buttons, borders, status, or the DETECT/ANALYZE/RESPOND channels. */
+  --accent-secondary: 129 140 248; /* #818CF8 */
+  /* Controlled brand accent — Login CTA + SecurityCore's real-elevated glow
+     only. See "SECOND AMENDMENT" above. */
+  --accent-warm:    251 191 36;    /* #FBBF24 */
+
+  --status-success: 34 197 94;     /* #22C55E */
+  --status-low:     96 165 250;    /* #60A5FA */
+  --status-medium:  245 158 11;    /* #F59E0B */
+  --status-high:    249 115 22;    /* #F97316 */
+  --status-critical:239 68 68;     /* #EF4444 */
+
+  --shadow-panel: none;
+  --panel-highlight: inset 0 1px 0 0 rgb(255 255 255 / 0.02);
+}
+
+.light {
+  color-scheme: light;
+
+  --bg-primary:     248 250 252;   /* #F8FAFC */
+  --bg-secondary:   241 245 249;   /* #F1F5F9 */
+  --bg-surface:     255 255 255;   /* #FFFFFF */
+  --bg-elevated:    248 250 252;   /* #F8FAFC */
+  --border-default: 226 232 240;   /* #E2E8F0 */
+
+  --text-primary:   15 23 42;      /* #0F172A */
+  --text-secondary: 71 85 105;     /* #475569 */
+  --text-muted:     148 163 184;   /* #94A3B8 */
+
+  --accent:         2 132 199;     /* #0284C7 */
+  --accent-secondary: 99 102 241;  /* #6366F1 */
+  --accent-warm:    180 83 9;      /* #B45309 */
+
+  --status-success: 22 163 74;     /* #16A34A */
+  --status-low:     37 99 235;     /* #2563EB */
+  --status-medium:  217 119 6;     /* #D97706 */
+  --status-high:    234 88 12;     /* #EA580C */
+  --status-critical:220 38 38;     /* #DC2626 */
+
+  --shadow-panel: 0 1px 2px 0 rgb(30 41 89 / 0.04), 0 4px 12px -2px rgb(30 41 89 / 0.07);
+  --panel-highlight: none;
+}

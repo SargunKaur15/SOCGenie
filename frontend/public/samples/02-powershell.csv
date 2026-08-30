@@ -1,0 +1,3 @@
+timestamp,event_type,host,user,src_ip,process,parent_process,command_line
+2026-08-18T09:00:00Z,process,WS-042,analyst01,10.10.20.14,powershell.exe,OUTLOOK.EXE,"powershell.exe -nop -w hidden -enc SQBFAFgA"
+2026-08-18T09:00:30Z,process,WS-018,j.mehta,10.10.20.27,powershell.exe,explorer.exe,"powershell.exe Get-Process"

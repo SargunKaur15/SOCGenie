@@ -1,0 +1,70 @@
+@import "./styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: rgb(var(--border-default));
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background-color: rgb(var(--bg-primary));
+    color: rgb(var(--text-primary));
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "cv11", "ss01";
+    transition: background-color 350ms cubic-bezier(0.4, 0, 0.2, 1), color 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  ::selection {
+    background: rgb(var(--accent) / 0.25);
+  }
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(var(--bg-primary)), 0 0 0 4px rgb(var(--accent));
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--border-default));
+    border-radius: 999px;
+    border: 2px solid rgb(var(--bg-primary));
+  }
+
+  /* Theme transition.
+     Applied ONLY while switching (useTheme adds .theme-switching for 400ms),
+     never permanently. A standing global colour transition would slow every
+     hover state across all 11 screens — a real regression for a one-off
+     effect. This scopes the cost to the switch itself. */
+  .theme-switching,
+  .theme-switching *,
+  .theme-switching *::before,
+  .theme-switching *::after {
+    transition:
+      background-color 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      color 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      fill 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      stroke 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 350ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .tabular { font-variant-numeric: tabular-nums; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+}
