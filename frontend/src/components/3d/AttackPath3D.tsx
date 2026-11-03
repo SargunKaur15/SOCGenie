@@ -5,6 +5,7 @@ import type { Group, Mesh } from "three";
 import type { SocAlert } from "../../mocks/alertStore";
 import { colorFor, CORE_COLOR, NEUTRAL_COLOR } from "../../lib/3d/socGraph";
 import { DataPulse } from "./DataPulse";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 
 /**
  * Attack path — the investigation's 3D relationship chain.
@@ -17,10 +18,6 @@ import { DataPulse } from "./DataPulse";
  * detection rather than a traversal. Presenting it as a branching graph would
  * imply relationships the data does not establish.
  */
-
-const REDUCED_MOTION =
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
 function webglAvailable(): boolean {
   if (typeof document === "undefined") return false;
@@ -90,12 +87,13 @@ function StageNode({
   selected: boolean;
   onSelect: (s: Stage) => void;
 }) {
+  const reducedMotion = usePrefersReducedMotion();
   const ref = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
   useFrame((state) => {
     const m = ref.current;
-    if (!m || REDUCED_MOTION) return;
+    if (!m || reducedMotion) return;
     m.rotation.y = state.clock.elapsedTime * 0.25;
     m.scale.setScalar(hovered || selected ? 1.25 : 1);
   });
@@ -127,10 +125,11 @@ function StageNode({
 }
 
 function Rig({ children }: { children: React.ReactNode }) {
+  const reducedMotion = usePrefersReducedMotion();
   const group = useRef<Group>(null);
   useFrame((state) => {
     const g = group.current;
-    if (!g || REDUCED_MOTION) return;
+    if (!g || reducedMotion) return;
     g.rotation.y += (state.pointer.x * 0.3 - g.rotation.y) * 0.04;
   });
   return <group ref={group}>{children}</group>;

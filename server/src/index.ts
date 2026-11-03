@@ -216,7 +216,9 @@ const server = createServer(async (req, res) => {
       status: status.available ? "active" : "not_trained",
       algorithm: "RandomForestClassifier (scikit-learn)",
       anomaly_algorithm: "IsolationForest (scikit-learn)",
-      trained_at: null,
+      // Was hardcoded null regardless of status — model_card.json (surfaced
+      // here via status.metrics.trainedAt) has always had the real value.
+      trained_at: status.available ? status.metrics?.trainedAt ?? null : null,
       dataset_name: status.available ? "CSE-CIC-IDS2018" : null,
       dataset_hash: null,
       feature_count: 22,
@@ -313,6 +315,11 @@ server.listen(cfg.port, () => {
   console.log(`[socgenie/auth] authentication enabled: ${status.authEnabled}`);
   if (!status.authEnabled) {
     console.log("[socgenie/auth] NO demo password configured — all logins are refused (fail closed).");
+  }
+  if (cfg.demoCredentialCollision) {
+    console.warn(
+      "[socgenie/auth] DEMO_ANALYST_PASSWORD and DEMO_ADMIN_PASSWORD were identical — admin demo login is DISABLED until they differ. Analyst demo login is unaffected. Set two distinct values in .env."
+    );
   }
   console.log(`[socgenie/auth] allowed origins: ${cfg.allowedOrigins.join(", ")}`);
   if (!isProviderConfigured(cfg)) {

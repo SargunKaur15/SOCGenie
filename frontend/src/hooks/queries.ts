@@ -1,32 +1,43 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  alertsApi, incidentsApi, logsApi, mlApi, mitreApi,
-  detectionsApi, analyticsApi, healthApi,
-} from "../lib/api";
-import type { AlertQuery } from "../lib/api/alerts";
+import { logsApi, mlApi, mitreApi, detectionsApi, healthApi } from "../lib/api";
+
+/**
+ * useMlMetrics (queryFn: mlApi.metrics) was removed here — DetectionML.tsx,
+ * its only consumer, now reads real training/evaluation metrics from
+ * useMlStatus()'s own `metrics` field instead (populated from
+ * model_card.json via server/src/mlProvider.ts). mlApi.metrics() itself
+ * unconditionally threw NO_TRAINED_MODEL in this build regardless of whether
+ * a model existed, because /api/ml/metrics is not a route the Node server
+ * implements — DEMO_MODE's request() helper never even tried the network
+ * call. Left in lib/api/ml.ts for now since removing it is a separate,
+ * broader change than this fix.
+ */
+
+/**
+ * Read-mostly, fixture/API-backed queries. Alerts, incidents, and analytics
+ * are deliberately NOT here — those are mutable session state, owned by the
+ * observable stores in src/mocks/* and read via hooks/useAlerts.ts and
+ * hooks/useIncidents.ts. This file previously also exported a useAlerts, a
+ * useIncidents, and a useAnalytics of its own, each wrapping a static
+ * fixture snapshot through TanStack Query. All three had zero real
+ * consumers except one accidental one (AppShell imported this useAlerts by
+ * mistake, which is why the sidebar's alert badge never updated — see
+ * AppShell.tsx). Removed rather than left as an unused trap for the next
+ * person reaching for "useAlerts" and getting the wrong one.
+ */
 
 /** Query keys are centralised so Phase 2 mutations can invalidate precisely. */
 export const qk = {
   health: ["health"] as const,
-  alerts: (params: AlertQuery) => ["alerts", params] as const,
-  incidents: ["incidents"] as const,
   events: (q: string) => ["events", q] as const,
   mlStatus: ["ml", "status"] as const,
-  mlMetrics: ["ml", "metrics"] as const,
   mlFeatures: ["ml", "features"] as const,
   mitre: ["mitre"] as const,
   detections: ["detections"] as const,
-  analytics: (range: string) => ["analytics", range] as const,
 };
 
 export const useHealth = () =>
   useQuery({ queryKey: qk.health, queryFn: healthApi.get, refetchInterval: 30_000 });
-
-export const useAlerts = (params: AlertQuery = {}) =>
-  useQuery({ queryKey: qk.alerts(params), queryFn: () => alertsApi.list(params) });
-
-export const useIncidents = () =>
-  useQuery({ queryKey: qk.incidents, queryFn: () => incidentsApi.list() });
 
 export const useEvents = (q = "") =>
   useQuery({ queryKey: qk.events(q), queryFn: () => logsApi.search({ q }) });
@@ -34,16 +45,8 @@ export const useEvents = (q = "") =>
 export const useMlStatus = () =>
   useQuery({ queryKey: qk.mlStatus, queryFn: mlApi.status });
 
-/** Expected to fail with NO_TRAINED_MODEL until Phase 9. No retries: the 404 is
- *  the answer, not a transient failure. */
-export const useMlMetrics = () =>
-  useQuery({ queryKey: qk.mlMetrics, queryFn: mlApi.metrics, retry: false });
-
 export const useMitre = () =>
   useQuery({ queryKey: qk.mitre, queryFn: () => mitreApi.list() });
 
 export const useDetections = () =>
   useQuery({ queryKey: qk.detections, queryFn: detectionsApi.list });
-
-export const useAnalytics = (range: "24h" | "7d" | "30d" = "24h") =>
-  useQuery({ queryKey: qk.analytics(range), queryFn: () => analyticsApi.summary(range) });

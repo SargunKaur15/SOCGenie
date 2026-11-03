@@ -5,6 +5,7 @@ import { DoubleSide, type Mesh, type MeshBasicMaterial } from "three";
 import type { SocAlert } from "../../mocks/alertStore";
 import type { Severity } from "../../lib/types";
 import { colorFor, CORE_COLOR } from "../../lib/3d/socGraph";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 
 /**
  * Threat Radar — a circular holographic sweep over real alert severity data.
@@ -21,10 +22,6 @@ import { colorFor, CORE_COLOR } from "../../lib/3d/socGraph";
  * "detected -> pulse -> calm" — driven purely by the shared clock, no
  * fabricated "detection events".
  */
-
-const REDUCED_MOTION =
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
 function webglAvailable(): boolean {
   if (typeof document === "undefined") return false;
@@ -76,9 +73,10 @@ function currentSweepAngle(t: number): number {
 }
 
 function Sweep() {
+  const reducedMotion = usePrefersReducedMotion();
   const ref = useRef<Mesh>(null);
   useFrame((state) => {
-    if (REDUCED_MOTION || !ref.current) return;
+    if (reducedMotion || !ref.current) return;
     ref.current.rotation.z = state.clock.elapsedTime * SWEEP_SPEED;
   });
   return (
@@ -95,6 +93,7 @@ function RadarMarker({
   point: RadarPoint;
   onSelect: (a: SocAlert) => void;
 }) {
+  const reducedMotion = usePrefersReducedMotion();
   const meshRef = useRef<Mesh>(null);
   const matRef = useRef<MeshBasicMaterial>(null);
   const [hovered, setHovered] = useState(false);
@@ -105,7 +104,7 @@ function RadarMarker({
     const m = meshRef.current;
     const mat = matRef.current;
     if (!m || !mat) return;
-    if (REDUCED_MOTION) {
+    if (reducedMotion) {
       m.scale.setScalar(hovered ? 1.4 : 1);
       mat.opacity = 0.6;
       return;

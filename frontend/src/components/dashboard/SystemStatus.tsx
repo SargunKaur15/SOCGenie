@@ -7,10 +7,15 @@ type State = "active" | "pending" | "unavailable";
 /**
  * SOC subsystem status.
  *
- * HONESTY CONTRACT — every row reports what is actually true in Phase 1.
- * There is no backend, no database, no log ingestion and no trained model, so
- * those rows read "Not connected" / "Not trained" rather than ONLINE. Green is
- * reserved for a subsystem that genuinely is running.
+ * Rule Engine, ML Detection Engine, API Service, and SOCGenie Assist report
+ * real state (ML Detection Engine and API Service are computed from a live
+ * /api/health check when one is reachable).
+ *
+ * Database and Log Ingestion are DISPLAY-ONLY for this portfolio build —
+ * neither subsystem exists in the codebase (no DB integration, no ingestion
+ * pipeline), and these two rows are hardcoded to "Connected" at the
+ * requester's explicit direction, overriding the honesty-contract default
+ * ("Not connected") that the rest of this component still follows.
  */
 export function SystemStatus() {
   const { data: health, isLoading } = useHealth();
@@ -27,12 +32,8 @@ export function SystemStatus() {
       value: DEMO_MODE ? "Demo mode" : health?.status === "ok" ? "Reachable" : "Unreachable",
       state: DEMO_MODE ? "pending" : health?.status === "ok" ? "active" : "unavailable",
     },
-    {
-      label: "Database",
-      value: DEMO_MODE ? "Not connected" : (health?.db ?? "Unknown"),
-      state: DEMO_MODE ? "pending" : health?.db === "connected" ? "active" : "unavailable",
-    },
-    { label: "Log Ingestion", value: "Not connected", state: "pending" },
+    { label: "Database", value: "Connected", state: "active" },
+    { label: "Log Ingestion", value: "Connected", state: "active" },
     {
       label: "SOCGenie Assist",
       value: health?.assist_provider === "llm" ? "External provider" : "Rule-based",
@@ -71,9 +72,6 @@ export function SystemStatus() {
           </li>
         ))}
       </ul>
-      <p className="border-t border-border px-4 py-2.5 text-2xs text-text-muted">
-        Subsystems not yet built report their real state rather than a placeholder.
-      </p>
     </Panel>
   );
 }

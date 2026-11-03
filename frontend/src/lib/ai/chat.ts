@@ -133,6 +133,11 @@ export interface ChatContext {
   incidents: SocIncident[];
   /** Optional focus, e.g. an alert the analyst already has open. */
   focusAlertRef?: string | null;
+  /** Real live-inference availability from /api/health's ml_engine.loaded —
+   *  not "was a model ever trained offline" (see model_card.json for that;
+   *  it's always true once training has run). Defaults to false so a probe
+   *  that hasn't resolved yet never overclaims live availability. */
+  mlEngineTrained?: boolean;
 }
 
 export interface ChatProvider {

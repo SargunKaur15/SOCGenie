@@ -1,10 +1,7 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { Mesh, MeshBasicMaterial } from "three";
-
-const REDUCED_MOTION =
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 
 /**
  * A small emissive point travelling along an EXISTING connection (from → to),
@@ -33,6 +30,7 @@ export function DataPulse({
    *  hardcoded value, so every existing caller is unaffected. */
   maxOpacity?: number;
 }) {
+  const reducedMotion = usePrefersReducedMotion();
   const meshRef = useRef<Mesh>(null);
   const materialRef = useRef<MeshBasicMaterial>(null);
 
@@ -49,7 +47,7 @@ export function DataPulse({
     mat.opacity = Math.sin(t * Math.PI) * maxOpacity;
   });
 
-  if (REDUCED_MOTION) return null;
+  if (reducedMotion) return null;
 
   return (
     <mesh ref={meshRef}>

@@ -28,9 +28,12 @@ export interface IncidentStoreApi {
 /**
  * Subscribes to the incident store.
  *
- * Named `useIncidentStore` deliberately: hooks/queries.ts already exports a
- * `useIncidents` TanStack query used by the Command Center, and shadowing it
- * would be a trap.
+ * Named `useIncidentStore` rather than `useIncidents` on purpose: a same-named
+ * `useAlerts` existing in both hooks/queries.ts (fixture-backed) and
+ * hooks/useAlerts.ts (this store's sibling, live) caused AppShell to
+ * accidentally import the wrong one and show a permanently stale sidebar
+ * badge — see AppShell.tsx and hooks/queries.ts. Keeping this one distinctly
+ * named avoids the same trap for incidents.
  */
 export function useIncidentStore(): IncidentStoreApi {
   const incidents = useSyncExternalStore(

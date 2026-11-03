@@ -8,6 +8,7 @@ import type { SocIncident } from "../../mocks/incidentStore";
 import { colorFor, ACCENT_SECONDARY_COLOR } from "../../lib/3d/socGraph";
 import { buildNetworkTopology, type TopoNode, type TopoNodeKind } from "../../lib/3d/networkTopology";
 import { DataPulse } from "./DataPulse";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 
 /**
  * Login page centrepiece — the live network topology built entirely from the
@@ -19,10 +20,6 @@ import { DataPulse } from "./DataPulse";
  * genuinely shares the incident or appears in the queue — never an invented
  * relationship.
  */
-
-const REDUCED_MOTION =
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
 function webglAvailable(): boolean {
   if (typeof document === "undefined") return false;
@@ -44,6 +41,7 @@ const ICON: Record<TopoNodeKind, typeof Laptop> = {
 };
 
 function PeerNode({ node }: { node: TopoNode }) {
+  const reducedMotion = usePrefersReducedMotion();
   const ref = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const color = colorFor(node.severity);
@@ -52,7 +50,7 @@ function PeerNode({ node }: { node: TopoNode }) {
 
   useFrame((state) => {
     const m = ref.current;
-    if (!m || REDUCED_MOTION) return;
+    if (!m || reducedMotion) return;
     const t = state.clock.elapsedTime;
     m.position.y = node.position[1] + Math.sin(t * 0.5 + node.position[0]) * 0.08;
     m.rotation.y = t * 0.15;
@@ -104,11 +102,12 @@ function PeerNode({ node }: { node: TopoNode }) {
  *  host and fade, like a detection sweep. Phase is derived from the clock
  *  modulo the period — deterministic, never Math.random(). */
 function DetectionRings({ color }: { color: string }) {
+  const reducedMotion = usePrefersReducedMotion();
   const refs = [useRef<Mesh>(null), useRef<Mesh>(null), useRef<Mesh>(null)];
   const period = 2.4;
 
   useFrame((state) => {
-    if (REDUCED_MOTION) return;
+    if (reducedMotion) return;
     refs.forEach((r, i) => {
       const m = r.current;
       if (!m) return;
@@ -133,13 +132,14 @@ function DetectionRings({ color }: { color: string }) {
 }
 
 function CompromisedNode({ node }: { node: TopoNode }) {
+  const reducedMotion = usePrefersReducedMotion();
   const ref = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const color = colorFor(node.severity);
 
   useFrame((state) => {
     const m = ref.current;
-    if (!m || REDUCED_MOTION) return;
+    if (!m || reducedMotion) return;
     m.rotation.y = state.clock.elapsedTime * 0.2;
     const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.8) * 0.06;
     m.scale.setScalar(hovered ? pulse * 1.1 : pulse);
@@ -203,10 +203,11 @@ function RadarFloor() {
 }
 
 function Rig({ children }: { children: React.ReactNode }) {
+  const reducedMotion = usePrefersReducedMotion();
   const group = useRef<Group>(null);
   useFrame((state) => {
     const g = group.current;
-    if (!g || REDUCED_MOTION) return;
+    if (!g || reducedMotion) return;
     const { x, y } = state.pointer;
     g.rotation.y += (x * 0.18 - g.rotation.y) * 0.03;
     g.rotation.x += (-y * 0.08 - g.rotation.x) * 0.03;

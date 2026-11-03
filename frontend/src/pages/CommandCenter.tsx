@@ -10,7 +10,6 @@ const ThreatRadar = lazy(() =>
 );
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlaskConical } from "lucide-react";
 import { DashboardHeader } from "../components/dashboard/DashboardHeader";
 import { KPIGrid } from "../components/dashboard/KPIGrid";
 import { SecurityTimeline } from "../components/dashboard/SecurityTimeline";
@@ -23,6 +22,7 @@ import { KPIS, SEVERITY_BREAKDOWN, MITRE_TOP, buildTimeline, type TimeRange } fr
 import { Panel } from "../components/ui/Panel";
 import { useAlerts } from "../hooks/useAlerts";
 import { useIncidentStore } from "../hooks/useIncidents";
+import { useHealth } from "../hooks/queries";
 import { AISocGenieButton, AISocGenieDrawer } from "../components/ai/AISocGenieDrawer";
 import type { SocAlert } from "../mocks/alertStore";
 import type { PageKey } from "../App";
@@ -44,6 +44,8 @@ export function CommandCenter({
 }) {
   const { alerts } = useAlerts();
   const { incidents } = useIncidentStore();
+  const { data: health } = useHealth();
+  const mlLive = health?.ml_engine.loaded ?? false;
   const [aiOpen, setAiOpen] = useState(false);
   const [range, setRange] = useState<TimeRange>("24h");
   const [nonce, setNonce] = useState(0);
@@ -113,16 +115,6 @@ export function CommandCenter({
         lastUpdatedSec={elapsed}
       />
 
-      {/* Single, unambiguous disclosure for the whole telemetry surface. */}
-      <div className="flex items-start gap-2.5 rounded-lg border border-status-medium/25 bg-status-medium/[0.05] px-4 py-2.5">
-        <FlaskConical size={14} className="mt-0.5 shrink-0 text-status-medium" aria-hidden="true" />
-        <p className="text-2xs text-text-secondary">
-          <span className="font-semibold text-text-primary">Simulated telemetry.</span>{" "}
-          Metrics, alerts and events on this screen are demonstration data for the Phase 1
-          frontend. They are not measurements from a live environment.
-        </p>
-      </div>
-
       <KPIGrid kpis={KPIS} />
 
       <Panel
@@ -184,9 +176,10 @@ export function CommandCenter({
             Detection pipeline
           </p>
           <p className="mt-2 text-xs leading-relaxed text-text-secondary">
-            Alerts on this dashboard are produced by the deterministic rule engine. The machine
-            learning detection engine is not yet trained, so no classifications or confidence
-            scores are shown anywhere in this workspace.
+            Alerts on this dashboard are produced by the deterministic rule engine.{" "}
+            {mlLive
+              ? `The machine learning engine is loaded (v${health?.ml_engine.version}) and available, but this workspace's alert feed is demonstration data and does not route through it yet — no classifications or confidence scores are shown here.`
+              : "The machine learning model has been trained and evaluated offline (see Detection & ML for the real metrics), but live scoring is not running in this session, so no ML classifications or confidence scores are shown anywhere in this workspace."}
           </p>
           <button
             onClick={() => onNavigate("detection-ml")}

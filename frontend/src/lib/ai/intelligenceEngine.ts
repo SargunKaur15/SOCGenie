@@ -489,7 +489,7 @@ export class LocalIntelligenceEngine implements AIProvider {
         "Produced by a deterministic rule-based engine, not a language model. No external service was consulted.",
         "Analysis is limited to the evidence captured on this alert; absence of evidence is not evidence of absence.",
         ctx.detectionSource === "rule"
-          ? "No machine-learning classification contributed, because the model is not yet trained."
+          ? "No machine-learning classification contributed to this alert — it was detected by the rule engine only."
           : "Machine-learning contribution is limited to the classification recorded on the alert.",
         "All response actions are recommendations. Nothing is executed and no system is modified.",
       ],
@@ -589,7 +589,7 @@ export class LocalIntelligenceEngine implements AIProvider {
               lines: [
                 ctx.mlEngineTrained
                   ? "Rule engine and machine-learning classification are both contributing."
-                  : "Detection is currently rule-based only. The machine-learning model is not trained, so no classifications contribute.",
+                  : "Detection is currently rule-based only. The ML model was trained and evaluated offline, but live scoring is not running, so no ML classifications contribute right now.",
               ],
             },
           ],

@@ -463,7 +463,7 @@ export class LocalChatEngine implements ChatProvider {
    *  assistant must never manufacture an assessment it has no basis for. */
   private async general(question: string, ctx: ChatContext): Promise<SocResponse> {
     const openIncidents = ctx.incidents.filter((i) => i.status !== "resolved").length;
-    const dash = buildDashboardContext(ctx.alerts, openIncidents, 248, false);
+    const dash = buildDashboardContext(ctx.alerts, openIncidents, 248, ctx.mlEngineTrained ?? false);
     const result = await getProvider().analyzeDashboard(dash, "summarize_alerts", question);
 
     const generalRetrieved = retrieveSources(question, []);

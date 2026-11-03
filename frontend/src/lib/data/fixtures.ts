@@ -91,7 +91,7 @@ export const detectionRules: DetectionRule[] = [
   { id: "R-004", name: "Privilege Escalation Indicator", description: "Token elevation or admin-group addition within 300 seconds of a non-admin session start.", severity: "critical", mitre_technique_id: "T1068", enabled: true, match_count: 1, last_triggered: t(34) },
   { id: "R-005", name: "Anomalous Outbound Volume", description: "Outbound bytes exceed five times the host rolling baseline to an external destination.", severity: "high", mitre_technique_id: "T1041", enabled: true, match_count: 5, last_triggered: t(47) },
   { id: "R-006", name: "Threat Intelligence Match", description: "Source or destination address matches a curated indicator with confidence 70 or above.", severity: "high", mitre_technique_id: "T1071", enabled: true, match_count: 9, last_triggered: t(8) },
-  { id: "R-007", name: "Beaconing Regularity", description: "Six or more connections to one destination with inter-arrival std/mean below 0.15 over 30 minutes.", severity: "medium", mitre_technique_id: "T1071", enabled: false, match_count: 1, last_triggered: t(64) },
+  { id: "R-007", name: "Beaconing Regularity", description: "Six or more connections to one destination with inter-arrival std/mean below 0.15 over 30 minutes.", severity: "medium", mitre_technique_id: "T1071", enabled: true, match_count: 1, last_triggered: t(64) },
 ];
 
 export const mitreTechniques: MitreTechnique[] = [

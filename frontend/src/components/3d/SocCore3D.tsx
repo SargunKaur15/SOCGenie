@@ -10,6 +10,7 @@ import {
 } from "../../lib/3d/socGraph";
 import { SecurityCore } from "./SecurityCore";
 import { DataPulse } from "./DataPulse";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 
 /**
  * SOC Core — the dashboard's 3D network view.
@@ -21,10 +22,6 @@ import { DataPulse } from "./DataPulse";
  * 3D is SUPPLEMENTARY. The same information is rendered as text beside the
  * canvas, so nothing is reachable only by hovering a mesh.
  */
-
-const REDUCED_MOTION =
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
 /** WebGL probe. Failure must fall back to the 2D summary, not a blank panel. */
 function webglAvailable(): boolean {
@@ -48,6 +45,7 @@ function Node({
   onHover: (n: GraphNode | null) => void;
   onSelect: (n: GraphNode) => void;
 }) {
+  const reducedMotion = usePrefersReducedMotion();
   const ref = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const color = node.kind === "core" ? CORE_COLOR : colorFor(node.severity);
@@ -57,7 +55,7 @@ function Node({
 
   useFrame((state) => {
     const m = ref.current;
-    if (!m || REDUCED_MOTION) return;
+    if (!m || reducedMotion) return;
     const t = state.clock.elapsedTime;
     // Slight float for depth, deterministic per node so it never jitters.
     m.position.y = node.position[1] + Math.sin(t * 0.6 + node.position[0]) * 0.08;
@@ -97,10 +95,11 @@ function Node({
 
 /** Subtle parallax. Never a continuous spin — that reads as decoration. */
 function Rig({ children }: { children: React.ReactNode }) {
+  const reducedMotion = usePrefersReducedMotion();
   const group = useRef<Group>(null);
   useFrame((state) => {
     const g = group.current;
-    if (!g || REDUCED_MOTION) return;
+    if (!g || reducedMotion) return;
     const { x, y } = state.pointer;
     g.rotation.y += (x * 0.22 - g.rotation.y) * 0.03;
     g.rotation.x += (-y * 0.12 - g.rotation.x) * 0.03;

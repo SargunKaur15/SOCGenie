@@ -1,7 +1,12 @@
 # SOCGenie ML — Phase 13
 pandas>=2.0
 numpy>=1.24
-scikit-learn>=1.3
+# Pinned exactly (not >=): the trained model in models/ was produced with
+# scikit-learn 1.7.0 (see the unpickling warning sklearn itself emits if this
+# drifts). A newer default resolved by `pip install -r requirements.txt`
+# still loads the pickle, but with a version-mismatch warning — pinning
+# keeps a fresh environment setup reproducibly matched to the real artifact.
+scikit-learn==1.7.0
 joblib>=1.3
 fastapi>=0.110
 uvicorn>=0.27

@@ -11,7 +11,7 @@ import { KeyValueList } from "../components/ui/KeyValueList";
 import { TableSkeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/EmptyState";
 import { ErrorState } from "../components/ui/ErrorState";
-import { useDetections, useMlStatus, useMlMetrics } from "../hooks/queries";
+import { useDetections, useMlStatus } from "../hooks/queries";
 import { FEATURE_REGISTRY, SECURITY_CLASSES } from "../lib/constants";
 import { relativeTime } from "../lib/format";
 import type { DetectionRule } from "../lib/types";
@@ -24,11 +24,17 @@ export function DetectionML() {
   const [tab, setTab] = useState<(typeof TABS)[number]>("rules");
   const rulesQ = useDetections();
   const statusQ = useMlStatus();
-  const metricsQ = useMlMetrics();
 
   const rules = rulesQ.data ?? [];
   const status = statusQ.data;
-  const untrained = status?.status === "not_trained";
+  // "not_trained" here means "not currently loaded/active" — the live-service
+  // signal from mlStatus() (server/src/mlProvider.ts). It is NOT a claim that
+  // no model was ever trained: model_card.json's offline training/evaluation
+  // is a separate, always-true fact once training has run. metrics below
+  // comes from that same model_card.json and is real whenever status.available
+  // is true, whether or not this exact session ever queried it before.
+  const live = status?.available === true;
+  const metrics = status?.metrics ?? null;
 
   const columns: Column<DetectionRule>[] = [
     {
@@ -52,8 +58,6 @@ export function DetectionML() {
       render: (r) => <Badge tone={r.enabled ? "success" : "neutral"}>{r.enabled ? "Enabled" : "Disabled"}</Badge>,
     },
   ];
-
-  const mlLive = status?.available === true;
 
   return (
     <div className="flex h-full flex-col">
@@ -85,24 +89,25 @@ export function DetectionML() {
       ) : (
         <div className="flex-1 overflow-y-auto p-6">
           <div className="mx-auto flex max-w-[1100px] flex-col gap-4">
-            {untrained && (
+            {!live && (
               <div className="flex items-start gap-2.5 rounded-lg border border-status-medium/30 bg-status-medium/[0.06] px-4 py-3">
                 <AlertCircle size={15} className="mt-0.5 shrink-0 text-status-medium" aria-hidden="true" />
                 <div>
-                  <p className="text-[13px] font-medium text-text-primary">ML ENGINE — NOT LOADED</p>
+                  <p className="text-[13px] font-medium text-text-primary">ML ENGINE — LIVE SCORING NOT RUNNING</p>
                   <p className="mt-1 text-2xs leading-relaxed text-text-secondary">
-                    {status?.reason
-                      ? status.reason
-                      : "No Random Forest or Isolation Forest artifact is loaded, so no accuracy, F1, precision or recall figures are shown."}{" "}
-                    Detection falls back to the seven deterministic rules, which are fully
-                    operational.
+                    {status?.reason ?? "The ML service is not reachable from this session."} Detection
+                    falls back to the seven deterministic rules, which are fully operational.
                   </p>
                   <p className="mt-0.5 text-2xs text-text-secondary">
-                    Metrics, feature importances and the confusion matrix stay empty until training runs. SOCGenie
-                    does not display estimated or placeholder model results.
+                    This is about live inference, not training: the Random Forest and Isolation Forest
+                    models were trained and evaluated offline against CSE-CIC-IDS2018, and their
+                    checksummed artifacts and real evaluation metrics exist in the repository (see the
+                    training pipeline below). SOCGenie only refuses to display placeholder or estimated
+                    figures here — it never fabricates a result — which is why the panel below is empty
+                    while the live service is unreachable, even though training itself is complete.
                   </p>
                   <p className="mono mt-2 flex items-center gap-1.5 text-2xs text-text-muted">
-                    <Terminal size={11} aria-hidden="true" /> python -m ml.training.train
+                    <Terminal size={11} aria-hidden="true" /> python -m ml.train --data datasets/CSE-CIC-IDS2018 --out models
                   </p>
                 </div>
               </div>
@@ -117,8 +122,15 @@ export function DetectionML() {
                   items={[
                     { label: "Model", value: status.model_name },
                     { label: "Version", value: status.version ?? "—" },
-                    { label: "Status", value: <span className={untrained ? "text-status-medium" : "text-status-success"}>{status.status.replace("_", " ").toUpperCase()}</span> },
-                    { label: "Trained", value: status.trained_at ?? "Never" },
+                    {
+                      label: "Status",
+                      value: (
+                        <span className={live ? "text-status-success" : "text-status-medium"}>
+                          {live ? "ACTIVE — LIVE SCORING" : "TRAINED, LIVE SERVICE DORMANT"}
+                        </span>
+                      ),
+                    },
+                    { label: "Trained", value: status.trained_at ?? (live ? "—" : "Unknown — live service not running") },
                     { label: "Classifier", value: status.algorithm },
                     { label: "Anomaly detector", value: status.anomaly_algorithm },
                     { label: "Dataset", value: status.dataset_name ?? "—" },
@@ -147,14 +159,31 @@ export function DetectionML() {
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <Panel eyebrow="Evaluation" title="Classification performance">
-                {metricsQ.isError ? (
+                {statusQ.isLoading ? (
+                  <TableSkeleton rows={2} cols={4} />
+                ) : metrics ? (
+                  <>
+                    <KeyValueList
+                      columns={2}
+                      items={[
+                        { label: "Accuracy", value: metrics.accuracy != null ? `${(metrics.accuracy * 100).toFixed(2)}%` : "—" },
+                        { label: "Macro F1", value: metrics.macroF1 != null ? metrics.macroF1.toFixed(4) : "—" },
+                        { label: "Benign holdout FPR", value: metrics.benignHoldoutFpr != null ? `${(metrics.benignHoldoutFpr * 100).toFixed(2)}%` : "—" },
+                        { label: "Checksums verified", value: metrics.checksumsVerified ? "Yes" : "No" },
+                      ]}
+                    />
+                    <p className="mt-3 border-t border-border pt-3 text-2xs text-text-muted">
+                      From model_card.json, produced by the offline training/evaluation run — not estimated,
+                      not live-recomputed. Per-class precision/recall and the full confusion matrix are in
+                      the model card itself; this API does not yet surface them here.
+                    </p>
+                  </>
+                ) : (
                   <EmptyState
                     icon={AlertCircle}
-                    title="No metrics available"
-                    description="Per-class performance and the confusion matrix appear after the first training run."
+                    title="Metrics unavailable"
+                    description="The live ML service isn't reachable from this session, so its real evaluation metrics can't be fetched right now. This does not mean the model is untrained — see the notice above."
                   />
-                ) : (
-                  <TableSkeleton rows={2} cols={4} />
                 )}
               </Panel>
 

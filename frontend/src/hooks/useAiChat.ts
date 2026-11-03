@@ -5,6 +5,7 @@ import { classifyIntent } from "../lib/ai/chatEngine";
 import type { ChatIntent, ChatMessage, SocResponse } from "../lib/ai/chat";
 import { useAlerts } from "./useAlerts";
 import { useIncidentStore } from "./useIncidents";
+import { useHealth } from "./queries";
 
 /**
  * Conversation state for the AI SOCGenie assistant.
@@ -16,6 +17,9 @@ import { useIncidentStore } from "./useIncidents";
 export function useAiChat(focusAlertRef?: string | null) {
   const { alerts } = useAlerts();
   const { incidents } = useIncidentStore();
+  // Same live health check every other real-time indicator in the app reads
+  // (SystemStatus, TopBar, EngineStatus) — not a guess, and not hardcoded.
+  const { data: health } = useHealth();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   // Probe once on mount so the header status is accurate before the first ask.
@@ -27,8 +31,13 @@ export function useAiChat(focusAlertRef?: string | null) {
   const seq = useRef(0);
 
   const context = useMemo(
-    () => ({ alerts, incidents, focusAlertRef: focusAlertRef ?? null }),
-    [alerts, incidents, focusAlertRef]
+    () => ({
+      alerts,
+      incidents,
+      focusAlertRef: focusAlertRef ?? null,
+      mlEngineTrained: health?.ml_engine.loaded ?? false,
+    }),
+    [alerts, incidents, focusAlertRef, health]
   );
 
   const stamp = () => new Date().toLocaleTimeString("en-GB", { hour12: false, hour: "2-digit", minute: "2-digit" });

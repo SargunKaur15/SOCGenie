@@ -12,9 +12,13 @@
 --------------------------------------------------------------------------- */
 import type { ServerConfig } from "./config";
 
-/** Localhost only. Not configurable to a remote host by design: an env var
- *  pointing elsewhere would turn this into an SSRF sink. */
-const ML_BASE = "http://127.0.0.1:8000";
+/** Localhost only. The HOST is never configurable — an env var pointing
+ *  elsewhere would turn this into an SSRF sink. Only the PORT is
+ *  configurable, via SOCGENIE_ML_PORT, for the case where 8000 is already
+ *  taken by something else on a given machine. ml/service/app.py reads the
+ *  same variable, so the two processes can never drift out of sync. */
+const ML_PORT = process.env.SOCGENIE_ML_PORT?.trim() || "8000";
+const ML_BASE = `http://127.0.0.1:${ML_PORT}`;
 const DEFAULT_TIMEOUT_MS = 5000;
 
 export interface MlPrediction {

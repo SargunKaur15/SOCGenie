@@ -33,6 +33,10 @@ export interface ServerConfig {
   tokenTtlSeconds: number;
   demoAnalystPassword: string | null;
   demoAdminPassword: string | null;
+  /** True when DEMO_ANALYST_PASSWORD and DEMO_ADMIN_PASSWORD were both set to
+   *  the same value — in which case demoAdminPassword above has already been
+   *  forced to null. Exposed so the boot log can say why. */
+  demoCredentialCollision: boolean;
   allowedOrigins: string[];
   /** Ceiling on an upstream provider response body, in bytes. */
   maxProviderBytes: number;
@@ -53,6 +57,28 @@ const DEFAULT_MODEL: Record<Exclude<ProviderName, "none">, string> = {
   openrouter: "meta-llama/llama-3.3-70b-instruct:free",
 };
 
+/**
+ * Reads both demo passwords and refuses to let them grant the SAME access.
+ *
+ * roleForEmail() picks admin vs analyst purely from the email's local part —
+ * that's fine as long as the two roles still require different passwords. If
+ * an operator ships DEMO_ANALYST_PASSWORD and DEMO_ADMIN_PASSWORD identical
+ * (e.g. an unedited copy of .env.example), the admin password is treated as
+ * unset — failing closed on the higher-privilege role — rather than silently
+ * letting the analyst password also unlock admin. The analyst demo login is
+ * unaffected.
+ */
+function resolveDemoCredentials(): {
+  analyst: string | null;
+  admin: string | null;
+  collision: boolean;
+} {
+  const analyst = process.env.DEMO_ANALYST_PASSWORD?.trim() || null;
+  const rawAdmin = process.env.DEMO_ADMIN_PASSWORD?.trim() || null;
+  const collision = analyst !== null && rawAdmin !== null && analyst === rawAdmin;
+  return { analyst, admin: collision ? null : rawAdmin, collision };
+}
+
 /** Each provider reads its own key. Resolving here keeps LlmProvider.complete()
  *  unchanged — a provider never needs to know which env var it came from. */
 function resolveProvider(): { provider: ProviderName; apiKey: string | null } {
@@ -68,6 +94,7 @@ function resolveProvider(): { provider: ProviderName; apiKey: string | null } {
 
 export function loadConfig(): ServerConfig {
   const { provider, apiKey } = resolveProvider();
+  const demoCreds = resolveDemoCredentials();
 
   return {
     provider,
@@ -86,8 +113,9 @@ export function loadConfig(): ServerConfig {
     // AUTH_SECRET to keep sessions alive across restarts.
     authSecret: process.env.AUTH_SECRET?.trim() || randomBytes(32).toString("hex"),
     tokenTtlSeconds: intFromEnv("TOKEN_TTL_SECONDS", 8 * 60 * 60),
-    demoAnalystPassword: process.env.DEMO_ANALYST_PASSWORD?.trim() || null,
-    demoAdminPassword: process.env.DEMO_ADMIN_PASSWORD?.trim() || null,
+    demoAnalystPassword: demoCreds.analyst,
+    demoAdminPassword: demoCreds.admin,
+    demoCredentialCollision: demoCreds.collision,
     allowedOrigins: (process.env.ALLOWED_ORIGINS?.trim() || "http://localhost:5173,http://127.0.0.1:5173")
       .split(",")
       .map((o) => o.trim())

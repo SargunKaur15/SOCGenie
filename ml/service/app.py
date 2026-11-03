@@ -189,4 +189,10 @@ def build_app():  # pragma: no cover - requires fastapi
 
 if __name__ == "__main__":  # pragma: no cover
     import uvicorn
-    uvicorn.run(build_app(), host="127.0.0.1", port=8000)
+
+    # Host is never configurable (127.0.0.1 only — see module docstring).
+    # Port is configurable via SOCGENIE_ML_PORT for the case where 8000 is
+    # already taken by something else on a given machine. server/src/mlProvider.ts
+    # reads the same variable, so the two processes can never drift out of sync.
+    port = int(os.environ.get("SOCGENIE_ML_PORT", "8000"))
+    uvicorn.run(build_app(), host="127.0.0.1", port=port)
