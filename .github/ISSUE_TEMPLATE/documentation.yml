@@ -1,0 +1,35 @@
+name: Documentation improvement
+description: Something in the docs is missing, unclear, outdated or wrong
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Where is the problem?
+      description: File and section, or a link.
+      placeholder: "README.md, Installation and Setup"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type of problem
+      options:
+        - Incorrect or outdated
+        - Missing information
+        - Unclear or confusing
+        - A command does not work
+        - Broken link or image
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What should it say?
+      description: >
+        Describe the problem and, if you can, the correction. If a command failed,
+        include the command, your OS and versions, and the error output (without secrets).
+    validations:
+      required: true

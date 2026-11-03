@@ -1,0 +1,63 @@
+name: Bug report
+description: Something in SOCGenie does not work as documented
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not use this form for security vulnerabilities.**
+        See the [security policy](https://github.com/SargunKaur15/SOCGenie/security/policy) for private reporting.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. Click ...
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Frontend (console)
+        - Detection engine (rules, risk scoring)
+        - AI assistant / Node server
+        - ML service / training
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: How were you running SOCGenie?
+      options:
+        - Console only (npm run dev)
+        - Console + Node server
+        - Console + Node server + ML service
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node.js version, Python version (if relevant), browser.
+      placeholder: "Windows 11, Node 24, Python 3.12, Chrome"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and screenshots
+      description: >
+        Console output, server logs or screenshots. Remove API keys, tokens and any
+        other secrets first.

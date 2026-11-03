@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/SargunKaur15/SOCGenie/security/policy
+    about: Please do not file vulnerabilities as public issues. Read the security policy for private reporting.
